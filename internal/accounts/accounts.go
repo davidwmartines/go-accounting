@@ -24,6 +24,17 @@ type Transaction struct {
 	Entries []Entry
 }
 
+func (trans *Transaction) AddEntry(act *Account, amount int) {
+	trans.Entries = append(trans.Entries, Entry{act, amount})
+}
+
+func Transaction2(fromAccount *Account, toAccount *Account, amount int) *Transaction {
+	trans := Transaction{}
+	trans.AddEntry(fromAccount, amount*-1)
+	trans.AddEntry(toAccount, amount)
+	return &trans
+}
+
 type Entry struct {
 	Account *Account
 	Amount  int
