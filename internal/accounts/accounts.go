@@ -4,6 +4,10 @@ type Account struct {
 	Name string
 }
 
+func NewAccount(name string) *Account {
+	return &Account{Name: name}
+}
+
 func (act *Account) Balance(source_transactions []Transaction) int {
 	var bal int
 	entries := make([]Entry, 0, 20)
@@ -24,15 +28,19 @@ type Transaction struct {
 	Entries []Entry
 }
 
+func NewTransaction() *Transaction {
+	return &Transaction{Entries: make([]Entry, 0, 4)}
+}
+
 func (trans *Transaction) AddEntry(act *Account, amount int) {
 	trans.Entries = append(trans.Entries, Entry{act, amount})
 }
 
 func Transaction2(fromAccount *Account, toAccount *Account, amount int) *Transaction {
-	trans := Transaction{}
+	trans := NewTransaction()
 	trans.AddEntry(fromAccount, amount*-1)
 	trans.AddEntry(toAccount, amount)
-	return &trans
+	return trans
 }
 
 type Entry struct {
