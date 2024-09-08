@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Rhymond/go-money"
-	"github.com/davidwmartines/accountsim/internal/accounts"
+	"github.com/davidwmartines/go-accounting/internal/accounts"
 )
 
 func main() {

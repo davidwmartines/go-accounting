@@ -1,4 +1,4 @@
-module github.com/davidwmartines/accountsim
+module github.com/davidwmartines/go-accounting
 
 go 1.23.0
 
