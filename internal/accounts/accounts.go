@@ -1,5 +1,11 @@
 package accounts
 
+import (
+	"log"
+
+	"github.com/Rhymond/go-money"
+)
+
 type Account struct {
 	Name string
 }
@@ -8,8 +14,8 @@ func NewAccount(name string) *Account {
 	return &Account{Name: name}
 }
 
-func (act *Account) Balance(source_transactions []Transaction) int {
-	var bal int
+func (act *Account) Balance(source_transactions []Transaction) *money.Money {
+	bal := money.New(0, money.USD)
 	entries := make([]Entry, 0, 20)
 	for _, t := range source_transactions {
 		for _, e := range t.Entries {
@@ -19,7 +25,12 @@ func (act *Account) Balance(source_transactions []Transaction) int {
 		}
 	}
 	for _, entry := range entries {
-		bal += entry.Amount
+		sum, err := bal.Add(entry.Amount)
+		if err != nil {
+			log.Fatal(err)
+		}
+		bal = sum
+
 	}
 	return bal
 }
@@ -32,18 +43,18 @@ func NewTransaction() *Transaction {
 	return &Transaction{Entries: make([]Entry, 0, 4)}
 }
 
-func (trans *Transaction) AddEntry(act *Account, amount int) {
+func (trans *Transaction) AddEntry(act *Account, amount *money.Money) {
 	trans.Entries = append(trans.Entries, Entry{act, amount})
 }
 
-func Transaction2(fromAccount *Account, toAccount *Account, amount int) *Transaction {
+func Transaction2(fromAccount *Account, toAccount *Account, amount *money.Money) *Transaction {
 	trans := NewTransaction()
-	trans.AddEntry(fromAccount, amount*-1)
+	trans.AddEntry(fromAccount, amount.Negative())
 	trans.AddEntry(toAccount, amount)
 	return trans
 }
 
 type Entry struct {
 	Account *Account
-	Amount  int
+	Amount  *money.Money
 }

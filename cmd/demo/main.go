@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/Rhymond/go-money"
 	"github.com/davidwmartines/accountsim/internal/accounts"
 )
 
@@ -22,8 +23,8 @@ func main() {
 	// create literal transaction
 	trans1 := accounts.Transaction{
 		Entries: []accounts.Entry{
-			{Account: income_source_account, Amount: -100},
-			{Account: cash_account, Amount: 100}}}
+			{Account: income_source_account, Amount: money.NewFromFloat(-100, money.USD).Negative()},
+			{Account: cash_account, Amount: money.NewFromFloat(100, money.USD)}}}
 
 	all_transactions = append(all_transactions, trans1)
 	print_balance(cash_account, all_transactions)
@@ -31,22 +32,22 @@ func main() {
 
 	// append entries post creation
 	trans2 := accounts.NewTransaction()
-	trans2.Entries = append(trans2.Entries, accounts.Entry{Account: income_source_account, Amount: -250})
-	trans2.Entries = append(trans2.Entries, accounts.Entry{Account: cash_account, Amount: 250})
+	trans2.Entries = append(trans2.Entries, accounts.Entry{Account: income_source_account, Amount: money.NewFromFloat(250, money.USD).Negative()})
+	trans2.Entries = append(trans2.Entries, accounts.Entry{Account: cash_account, Amount: money.NewFromFloat(250, money.USD)})
 	all_transactions = append(all_transactions, *trans2)
 	print_balance(cash_account, all_transactions)
 	print_balance(income_source_account, all_transactions)
 
 	// using the AddEntry method
 	trans3 := accounts.NewTransaction()
-	trans3.AddEntry(income_source_account, -10)
-	trans3.AddEntry(cash_account, 10)
+	trans3.AddEntry(income_source_account, money.NewFromFloat(10, money.USD).Negative())
+	trans3.AddEntry(cash_account, money.NewFromFloat(10, money.USD))
 	all_transactions = append(all_transactions, *trans3)
 	print_balance(cash_account, all_transactions)
 	print_balance(income_source_account, all_transactions)
 
 	// Transaction2 factory function
-	trans4 := accounts.Transaction2(income_source_account, cash_account, 5)
+	trans4 := accounts.Transaction2(income_source_account, cash_account, money.NewFromFloat(5, money.USD))
 	all_transactions = append(all_transactions, *trans4)
 	print_balance(cash_account, all_transactions)
 	print_balance(income_source_account, all_transactions)
@@ -55,5 +56,5 @@ func main() {
 
 func print_balance(act *accounts.Account, all_transactions []accounts.Transaction) {
 	bal := act.Balance(all_transactions)
-	fmt.Printf("Account: %s, Balance: %d\n", act.Name, bal)
+	fmt.Printf("Account: %s, Balance: %s\n", act.Name, bal.Display())
 }
