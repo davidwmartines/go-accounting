@@ -14,10 +14,10 @@ func NewAccount(name string) *Account {
 	return &Account{Name: name}
 }
 
-func (act *Account) Balance(source_transactions []Transaction) *money.Money {
+func (act *Account) Balance(sourceTransactions []Transaction) *money.Money {
 	bal := money.New(0, money.USD)
 	entries := make([]Entry, 0, 20)
-	for _, t := range source_transactions {
+	for _, t := range sourceTransactions {
 		for _, e := range t.Entries {
 			if e.Account == act {
 				entries = append(entries, e)
@@ -45,6 +45,18 @@ func NewTransaction() *Transaction {
 
 func (trans *Transaction) AddEntry(act *Account, amount *money.Money) {
 	trans.Entries = append(trans.Entries, Entry{act, amount})
+}
+
+func (trans *Transaction) IsValid() bool {
+	total := money.New(0, money.USD)
+	for _, entry := range trans.Entries {
+		sum, err := total.Add(entry.Amount)
+		if err != nil {
+			log.Fatal(err)
+		}
+		total = sum
+	}
+	return total.IsZero()
 }
 
 func Transaction2(fromAccount *Account, toAccount *Account, amount *money.Money) *Transaction {
