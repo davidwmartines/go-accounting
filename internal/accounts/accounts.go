@@ -43,7 +43,7 @@ func (act *Account) Balance(sourceTransactions []Transaction) *money.Money {
 	return bal
 }
 
-// Transaction represents the transfer of money between accounts.
+// Transaction represents an atomic transfer of money between accounts.
 type Transaction struct {
 	Entries []Entry
 }
